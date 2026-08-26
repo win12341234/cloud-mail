@@ -3,12 +3,13 @@ import { settingConst } from '../const/entity-const';
 
 const aiService = {
 	async extractCode(c, email, options = {}) {
+		console.error('进入ai提取: ', email.text);
 		if (!this.shouldExtractCode(options.aiCode, options.aiCodeFilter, email)) {
 			return '';
 		}
 
 		const ai = c.env.ai;
-		console.error('进入ai提取: ', email.text);
+
 		try {
 			const subject = email.subject || '';
 			const text = emailUtils.formatText(email.text || '');
