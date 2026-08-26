@@ -37,9 +37,9 @@ const aiService = {
 				max_tokens: 32
 			});
 
-			content = typeof aiResult === 'string' ? aiResult : aiResult?.response || '';
-			const json = JSON.parse(content);
-			if (typeof json.code !== 'string') {
+			content = typeof aiResult === 'string' ? aiResult : aiResult?.response ?? '';
+			const json = typeof content === 'string' ? JSON.parse(content) : content;
+			if (typeof json?.code !== 'string') {
 				console.error('验证码提取失败: code 非字符串, AI返回:', content || aiResult);
 				return '';
 			}
