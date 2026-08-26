@@ -9,6 +9,8 @@ const aiService = {
 		}
 
 		const ai = c.env.ai;
+		let aiResult = null;
+		let content = '';
 
 		try {
 			const subject = email.subject || '';
@@ -20,7 +22,7 @@ const aiService = {
 				return '';
 			}
 
-			const result = await ai.run(c.env.ai_model || '@cf/meta/llama-3.1-8b-instruct-fast', {
+			aiResult = await ai.run(c.env.ai_model || '@cf/meta/llama-3.1-8b-instruct-fast', {
 				messages: [
 					{
 						role: 'system',
@@ -35,19 +37,21 @@ const aiService = {
 				max_tokens: 32
 			});
 
-			const content = typeof result === 'string' ? result : result?.response || '';
+			content = typeof aiResult === 'string' ? aiResult : aiResult?.response || '';
 			const json = JSON.parse(content);
 			if (typeof json.code !== 'string') {
+				console.error('验证码提取失败: code 非字符串, AI返回:', content || aiResult);
 				return '';
 			}
 
 			if (json.code.length > 8 || /\s/.test(json.code)) {
+				console.error('验证码提取失败: code 非法, AI返回:', content || aiResult);
 				return '';
 			}
 
 			return json.code;
 		} catch (e) {
-			console.error('验证码提取失败: ', e);
+			console.error('验证码提取失败: ', e, 'AI返回:', content || aiResult);
 			return '';
 		}
 	},
