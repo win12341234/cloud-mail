@@ -8,7 +8,7 @@ const aiService = {
 		}
 
 		const ai = c.env.ai;
-
+		console.error('进入ai提取: ', email.text);
 		try {
 			const subject = email.subject || '';
 			const text = emailUtils.formatText(email.text || '');
